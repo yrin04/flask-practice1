@@ -53,20 +53,30 @@ Jinja2 조건문으로 완료 여부에 따라 Complete 또는 Undo 링크가 �
 
 완료된 항목에는 CSS의 `text-decoration: line-through`를 적용했습니다.
 
+### 입력값 및 인덱스 확인
+
+- 공백만 입력한 경우에는 할 일이 추가되지 않도록 처리했습니다.
+- `delete`와 `toggle` 라우트에서 `0 <= index < len(todos)` 범위를 확인하여, 없는 번호로 접근해도 오류 없이 목록으로 돌아가도록 했습니다.
+
 ## 5. 실행 화면
 
-### ① 할 일 추가 및 목록 조회
-![할 일 목록](images/01_todo_list.png)
+### ① Todo 추가 및 목록 조회
 
-### ② 할 일 완료 처리
-![완료 상태 변경](images/02_todo_complete.png)
+Todo 항목 두 개를 추가하고 목록에 표시되는 것을 확인했습니다.
 
-### ③ 할 일 삭제
-![할 일 삭제](images/03_todo_delete.png)
+![Todo 추가 및 목록 조회](images/01_todo_list.png)
 
-### ③ 완료 취소 및 삭제
+### ② Todo 완료 처리
 
-(실행 화면 첨부 예정)
+Complete 링크를 눌러 항목을 완료 상태로 변경했습니다. 완료된 항목에는 취소선이 표시됩니다.
+
+![Todo 완료 처리](images/02_todo_complete.png)
+
+### ③ 새로고침 후 완료 상태 유지
+
+완료 처리한 Todo 항목이 페이지 새로고침(F5) 이후에도 완료 상태로 표시되는 것을 확인했습니다. 완료된 항목은 취소선과 Undo 버튼이 유지됩니다.
+
+![새로고침 후 완료 상태 유지](images/03_todo_refresh.png)
 
 ## 6. 참고 사항
 
