@@ -9,7 +9,10 @@ todos = []
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
-        todo = request.form['todo']
+        todo = request.form['todo'].strip()
+        
+        if not todo:
+            return redirect(url_for('index'))
 
         # 할 일과 완료 상태를 함께 저장
         todos.append({
