@@ -30,6 +30,14 @@ def index():
     return render_template('index.html', todos=todos)
 
 
+@app.route('/toggle/<int:id>')
+def toggle(id):
+    todo = db.get_or_404(Todo, id)
+    todo.done = not todo.done
+    db.session.commit()
+    return redirect(url_for('index'))
+
+
 @app.route('/edit/<int:id>', methods=['POST'])
 def edit(id):
     todo = db.get_or_404(Todo, id)

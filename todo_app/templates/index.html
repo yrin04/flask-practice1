@@ -17,7 +17,13 @@
 <ul>
     {% for todo in todos %}
     <li>
+        <a href="{{ url_for('toggle',
+                        id=todo.id) }}">완료</a>
+        {% if todo.done %}
+        <span class="done">{{ todo.text }}</span>
+        {% else %}
         {{ todo.text }}
+        {% endif %}
         <a href="{{ url_for('delete',
                         id=todo.id) }}">Delete</a>
     </li>
