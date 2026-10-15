@@ -132,6 +132,68 @@ class TodoList(Resource):
         }
 
 
+# 실습 ⑤: 번호 하나에 해당하는 할 일 조회
+@ns.route('/<int:id>')
+@ns.param('id', '할 일의 줄 번호')
+@ns.response(404, '그 번호의 할 일이 없습니다')
+class TodoItem(Resource):
+    @ns.doc('하나 보기')
+    @ns.marshal_with(todo_model)
+    def get(self, id):
+        """할 일 하나를 돌려준다"""
+        return get_or_abort(id)
+
+    # 실습 ⑥: 전체 수정
+    @ns.doc('통째로 바꾸기')
+    @ns.expect(todo_input, validate=True)
+    @ns.marshal_with(todo_model)
+    def put(self, id):
+        """할 일 하나를 통째로 바꾼다. 보내지 않은 칸은 기본값이 된다"""
+        todo = get_or_abort(id)
+        todo.text = api.payload['text']
+        todo.done = api.payload.get('done', False)
+        db.session.commit()
+        return todo
+
+    # 실습 ⑥: 보낸 항목만 수정
+    @ns.doc('일부만 바꾸기')
+    @ns.expect(todo_input)
+    @ns.marshal_with(todo_model)
+    def patch(self, id):
+        """보낸 칸만 바꾼다. 완료 표시를 뒤집을 때 씁니다"""
+        todo = get_or_abort(id)
+
+        if 'text' in api.payload:
+            todo.text = api.payload['text']
+
+        if 'done' in api.payload:
+            todo.done = api.payload['done']
+
+        db.session.commit()
+        return todo
+
+    # 실습 ⑦: 삭제
+    @ns.doc('지우기')
+    @ns.response(204, '지웠습니다. 돌려줄 내용이 없습니다')
+    def delete(self, id):
+        """할 일 하나를 지운다"""
+        todo = get_or_abort(id)
+        db.session.delete(todo)
+        db.session.commit()
+        return '', 204
+
+
+# 실습 ⑦: 없는 번호는 JSON 형식의 404 응답으로 처리
+def get_or_abort(id):
+    """없는 번호면 404를 JSON으로 돌려준다"""
+    todo = db.session.get(Todo, id)
+
+    if todo is None:
+        ns.abort(404, f'{id}번 할 일이 없습니다')
+
+    return todo
+
+
 app.register_blueprint(api_bp)
 
 with app.app_context():
